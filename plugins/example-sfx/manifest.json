@@ -1,0 +1,13 @@
+{
+  "name": "sfx-crawler",
+  "version": "1.0.0-helminth",
+  "entry": "python -m example_sfx.main",
+  "interface": ["discover", "download"],
+  "description": "音效爬虫（18 个公版音效源，JSON 配置驱动）——helminth engines/sfx_crawler.py 包装为独立插件",
+  "port": "",
+  "config": {
+    "sources_dir": "sources/sfx/（数据源 JSON）",
+    "max_items": "单次爬取上限"
+  },
+  "python": "auto"
+}
