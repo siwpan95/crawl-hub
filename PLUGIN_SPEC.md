@@ -42,3 +42,28 @@ crawler-plugin/
 ## 示例插件（本目录 example-sfx/）
 
 把 helminth 的 sfx 引擎包装为独立插件：manifest.json 声明 interface/entry，运行由宿主启动。
+
+## v2 增补（2026-08-27 爬虫插件化规划 P1）
+
+> 决策：爬虫类适合插件化（用户拍板）；先规范后改造。本增补与 v1 共存，v2 项目照此执行。
+
+### manifest 新增字段
+
+| 字段 | 必填 | 说明 |
+|---|---|---|
+| stop | 可选 | **停止命令（dispose 纪律，对齐 allin-platform）**：有优雅停止脚本必须声明（如 stop.bat / 信号处理入口）；缺省 = 宿主按 PID 树杀；任务日志记录 stop-graceful / stop-force / stop 三类动作 |
+| interface | ✅ | v1 的 discover/download 之外，允许 etch（列表页拉取）/ extract（正文抽取）/ 	ransform（转码）——与 image-scraper A 模式的 fetch_tasks/download 对齐 |
+
+### 形态选型表（A 进程内 / B 进程级 / C 迁移）
+
+| 条件 | 形态 | 样板 |
+|---|---|---|
+| 同语言轻量、源族多、需共享状态（断点/进度/代理池/身份池） | **A 进程内插件**：源 = 注册表条目（JSON 配置 + 一个模块） | image-scraper（16 源，新源 ≈30 行） |
+| 重依赖/易崩/跨语言/独立发布/自带 GUI 或服务 | **B 进程级插件**：manifest + 子进程隔离 | crawl-hub 本规范（webcopier 为首个接入） |
+| 已有浏览器扩展/网页形态的能力 | **C 迁移**：契约先定、宿主可换（Playwright 桥接） | bilibili-helper-py（Chrome 扩展 → 桌面应用） |
+| 单站点一次性脚本、无人维护 | 归档/单体，不插件化 | notpython 老爬虫四件（2026-08-27 已归档） |
+
+### 共享运行时库（纪律 5 升级）
+
+- crawler-kit 三件全提（用户拍板）：**Downloader**（限速/重试/断点续传/防盗链，自 image-scraper）+ **身份池**（UA/代理轮换，自 webcopier）+ **登录态**（Playwright 登录态管理，自 bilibili-helper-py）。
+- 引用不融合：插件在 manifest 里声明 kit: { downloader: ^1, identity: ^1, session: ^1 }；库有版本，插件声明依赖版本。
