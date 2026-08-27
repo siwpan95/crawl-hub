@@ -133,7 +133,7 @@ class TaskLog:
 
 def cmd_check(args) -> int:
     try:
-        with open(_CONFIG, "r", encoding="utf-8") as f:
+        with open(_CONFIG, "r", encoding="utf-8-sig") as f:
             cfg = json.load(f)
     except Exception as e:
         if args.json:
@@ -169,6 +169,69 @@ def cmd_check(args) -> int:
             else:
                 print(f"  [✓] {pl['name']}")
         print("全部通过 ✅" if report["ok"] else "存在配置问题（GUI 中对应卡片将禁用并标注原因）")
+    return 0 if report["ok"] else 1
+
+
+def cmd_plugin_audit(args) -> int:
+    """B 模式插件审计 + crawler-kit 冒烟（P4 黄金值）：
+    校验 crawlers.json 中 plugin:true 条目的 manifest 必填字段 + 共享库可导入。"""
+    try:
+        with open(_CONFIG, "r", encoding="utf-8-sig") as f:
+            cfg = json.load(f)
+    except Exception as e:
+        if args.json:
+            print(json.dumps({"ok": False, "error": f"配置读取失败: {e}"}, ensure_ascii=False))
+        return 2
+    problems = []
+    plugins = []
+    for item in cfg.get("crawlers", []):
+        if not item.get("plugin"):
+            continue
+        name = str(item.get("name", "")).strip()
+        mpath = os.path.join(str(item.get("path", "")), str(item.get("manifest", "manifest.json")))
+        try:
+            mf = json.loads(Path(mpath).read_text(encoding="utf-8"))
+        except Exception as e:
+            problems.append({"tool": name, "problem": f"manifest 读取失败: {e}"})
+            plugins.append({"name": name, "problems": ["manifest 读取失败"]})
+            continue
+        pl_problems = []
+        for field in ("name", "version", "entry", "interface"):
+            if not str(mf.get(field, "")).strip():
+                pl_problems.append(f"缺少字段 '{field}'")
+        if pl_problems:
+            problems.append({"tool": name, "problem": "; ".join(pl_problems)})
+        plugins.append({"name": mf.get("name", name), "problems": pl_problems})
+
+    # crawler-kit 冒烟：库可导入 + 版本（引用不融合：插件声明依赖版本）
+    kit = {"importable": False, "version": None, "error": None}
+    try:
+        r = subprocess.run([sys.executable, "-c",
+                            "import crawler_kit; print(crawler_kit.__version__)"],
+                           cwd=_ROOT, capture_output=True, text=True,
+                           encoding="utf-8", timeout=30)
+        if r.returncode == 0:
+            kit["importable"] = True
+            kit["version"] = (r.stdout or "").strip()
+        else:
+            kit["error"] = (r.stderr or "")[-200:]
+    except Exception as e:
+        kit["error"] = str(e)
+    if not kit["importable"]:
+        problems.append({"tool": "crawler-kit", "problem": "库不可导入: " + str(kit["error"])})
+
+    report = {"ok": len(problems) == 0 and kit["importable"],
+              "plugins_total": len(plugins),
+              "plugins": plugins,
+              "kit": kit,
+              "problems": problems}
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        print(f"插件审计：{len(plugins)} 个 B 模式插件；crawler-kit v{kit['version']} 可导入={kit['importable']}")
+        for p in problems:
+            print(f"  [✗] {p['tool']}: {p['problem']}")
+        print("全部通过 ✅" if report["ok"] else "存在问题")
     return 0 if report["ok"] else 1
 
 
@@ -236,7 +299,7 @@ class CrawlHub:
 
     def _load_config(self):
         try:
-            with open(_CONFIG, "r", encoding="utf-8") as f:
+            with open(_CONFIG, "r", encoding="utf-8-sig") as f:
                 cfg = json.load(f)
         except Exception as e:
             self.messagebox.showerror("配置错误", f"无法读取 {_CONFIG}:\n{e}")
@@ -394,12 +457,15 @@ def main(argv=None):
         pass
     parser = argparse.ArgumentParser(prog="launcher.py", description="crawl_hub 爬虫工具统一启动器")
     parser.add_argument("--check", action="store_true", help="无 GUI 配置审计")
+    parser.add_argument("--plugin-audit", action="store_true", help="B 模式插件 manifest + crawler-kit 冒烟审计")
     parser.add_argument("--dump-tasks", action="store_true", help="输出任务事件日志")
     parser.add_argument("--limit", type=int, default=50, help="--dump-tasks 显示条数")
     parser.add_argument("--json", action="store_true", help="JSON 输出")
     args = parser.parse_args(argv)
     if args.check:
         return cmd_check(args)
+    if args.plugin_audit:
+        return cmd_plugin_audit(args)
     if args.dump_tasks:
         return cmd_dump_tasks(args)
     CrawlHub().run()

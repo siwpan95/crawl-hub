@@ -29,6 +29,18 @@ def cmd_check(_payload):
             "error": None if ok else ((r.stderr or r.stdout or "")[-800:])}
 
 
+def cmd_plugin_audit(_payload):
+    try:
+        r = _run(["--plugin-audit", "--json"], timeout=60)
+        report = json.loads(r.stdout or "{}")
+    except Exception as e:
+        return {"ok": False, "value": None, "error": "plugin-audit failed: " + str(e)}
+    problems = len(report.get("problems") or [])
+    ok = r.returncode == 0 and report.get("ok") is True
+    return {"ok": ok, "value": problems if ok else None,
+            "error": None if ok else ((r.stderr or r.stdout or "")[-800:])}
+
+
 def cmd_tasks(_payload):
     try:
         r = _run(["--dump-tasks", "--json"], timeout=30)
@@ -41,7 +53,7 @@ def cmd_tasks(_payload):
             "error": None if r.returncode == 0 else ((r.stderr or "")[-400:])}
 
 
-CMDS = {"check": cmd_check, "tasks": cmd_tasks}
+CMDS = {"check": cmd_check, "tasks": cmd_tasks, "plugin-audit": cmd_plugin_audit}
 
 
 def main():

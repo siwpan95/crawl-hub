@@ -37,6 +37,7 @@ for (const c of MANIFEST.components) {
 const CASES = [
   { name: 'config-audit', cmd: 'check', participants: ['crawl-gate'], expected: 0, expectConsensus: true },
   { name: 'task-log', cmd: 'tasks', participants: ['crawl-gate'], expected: null, expectConsensus: false, expectDiverged: [] },
+  { name: 'plugin-audit', cmd: 'plugin-audit', participants: ['crawl-gate'], expected: 0, expectConsensus: true },
 ]
 
 const report = []
