@@ -1,10 +1,10 @@
 {
-  "_comment": "爬虫类工具聚合清单。启动器只负责启动，不 import 任何工具逻辑（零耦合）。新增工具只改本文件。path/entry 用绝对路径，避免相对路径 bug。python='auto' 表示用启动器自身解释器，可改为某工具的 venv python 绝对路径。路径已随仓库自 D 盘迁至 G 盘更新（2026-08-23）。",
+  "_comment": "爬虫类工具聚合清单。启动器只负责启动，不 import 任何工具逻辑（零耦合）。新增工具只改本文件。path/entry 用绝对路径，避免相对路径 bug。python='auto' 表示用启动器自身解释器，可改为某工具的 venv python 绝对路径。路径已随顶层目录拆分更新为 G:\\repos / G:\\assets（2026-08-27）。",
   "crawlers": [
     {
       "name": "网页爬虫 WebCopier",
       "category": "网页",
-      "path": "G:/tools/crawler/webcopier",
+      "path": "G:/repos/webcopier",
       "entry": "WebCopier_GUI.py",
       "desc": "整站/BFS 网页爬取，含暂停恢复、反爬身份池、图片下载、sitemap 支持",
       "python": "auto"
@@ -12,7 +12,7 @@
     {
       "name": "图片爬虫 Image-Scraper",
       "category": "图片",
-      "path": "G:/tools/crawler/image-scraper",
+      "path": "G:/repos/image-scraper",
       "entry": "gui_scraper.py",
       "desc": "多数据源图片爬虫，JSON 配置驱动，含代理获取/校验",
       "python": "auto"
@@ -20,7 +20,7 @@
     {
       "name": "简易图片爬虫 Photo",
       "category": "图片",
-      "path": "G:/media/photo",
+      "path": "G:/repos/photo",
       "entry": "main.py",
       "desc": "单页图片爬虫，URL + 正则提取 + 下载，轻量 GUI",
       "python": "auto"
@@ -28,7 +28,7 @@
     {
       "name": "音效爬虫 SFX",
       "category": "音效",
-      "path": "G:/tools/audio/sfx",
+      "path": "G:/repos/sfx-download",
       "entry": "gui.py",
       "desc": "18+ 公版音效源爬虫（mixkit/pixabay/zapsplat 等），含播放器",
       "python": "auto"
@@ -36,7 +36,7 @@
     {
       "name": "字体爬虫 Font-DL (网络)",
       "category": "字体",
-      "path": "G:/tools/desktop/fonts",
+      "path": "G:/assets/fonts",
       "entry": "font_downloader2.py",
       "desc": "网络字体爬虫（猫啃网/字体天下/100font/Google Fonts 等公版站）",
       "python": "auto"
@@ -44,7 +44,7 @@
     {
       "name": "字体复制 Font-DL (本地)",
       "category": "字体",
-      "path": "G:/tools/desktop/fonts",
+      "path": "G:/assets/fonts",
       "entry": "font_downloader.py",
       "desc": "本地字体复制工具，读本地 fonts_data.json 从源目录复制（与网络版互补）",
       "python": "auto"
@@ -52,7 +52,7 @@
     {
       "name": "B站助手 Bilibili-Helper",
       "category": "视频",
-      "path": "G:/tools/crawler/bilibili-helper-py",
+      "path": "G:/repos/bilibili-helper-py",
       "entry": "ui.py",
       "desc": "B站视频/弹幕下载与处理，多引擎架构，支持 SOCKS5 代理",
       "python": "auto"

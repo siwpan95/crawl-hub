@@ -1,0 +1,22 @@
+{
+  "name": "crawl-hub",
+  "description": "编排 harness 组件清单（组合即数据：加组件只改本文件；enabled:false = 运行时下架）。",
+  "runtime": {
+    "node": "node",
+    "python": "F:/Python314/python.exe"
+  },
+  "components": [
+    {
+      "id": "crawl-gate",
+      "kind": "subprocess",
+      "enabled": true,
+      "cmd": "{python}",
+      "args": [
+        "harness/driver.py"
+      ],
+      "cwd": "{root}",
+      "timeout": 120000,
+      "comment": "launcher.py --check / --dump-tasks 无 GUI 审计"
+    }
+  ]
+}

@@ -62,3 +62,14 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 
 > 注：`right/helminth` 是之前失败的融合式整合副本，可移入隔离区；
 > `right/video_generator/sfx` 是 video_generator 的内嵌音效模块（库，非独立工具），不在此收编。
+
+---
+
+## 编排 harness（离线黄金值门禁）
+
+`node harness/harness.mjs`——组件清单 harness/manifest.json，契约 harness/spec.md：
+
+- config-audit：launcher.py --check --json（crawlers.json 7 工具 + plugins/ 插件注册表）→ 黄金值 problems 总数 0
+- task-log：launcher.py --dump-tasks --json 条目数（informational，随运行增长）
+
+JSON-lines 子进程协议（python 驱动，对应 E:\lab chess-cordis/drivers/py/py_engine_driver.py）+ ready 握手 + 逐请求超时；子进程由 port 层登记 effect，退出即 kill；全绿 exit 0，任何分歧/报错 exit 1。无新增端口。
