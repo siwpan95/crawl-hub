@@ -16,6 +16,8 @@
       "category": "图片",
       "path": "G:/repos/image-scraper",
       "entry": "gui_scraper.py",
+      "plugin": true,
+      "manifest": "manifest.json",
       "desc": "多数据源图片爬虫，JSON 配置驱动，含代理获取/校验",
       "python": "auto"
     },
@@ -56,7 +58,29 @@
       "category": "视频",
       "path": "G:/repos/bilibili-helper-py",
       "entry": "ui.py",
+      "plugin": true,
+      "manifest": "manifest.json",
       "desc": "B站视频/弹幕下载与处理，多引擎架构，支持 SOCKS5 代理",
+      "python": "auto"
+    },
+    {
+      "name": "MJ 视频助手 Midjourney-Video",
+      "category": "图片",
+      "path": "G:/repos/midjourney_video",
+      "entry": "run.py",
+      "plugin": true,
+      "manifest": "manifest.json",
+      "desc": "Midjourney 视频/图集助手",
+      "python": "auto"
+    },
+    {
+      "name": "签到工具 Sign-in",
+      "category": "签到",
+      "path": "G:/repos/sign-in-simulator",
+      "entry": "qiandao.pyw",
+      "plugin": true,
+      "manifest": "manifest.json",
+      "desc": "签到工具（站点签到族）",
       "python": "auto"
     }
   ]
