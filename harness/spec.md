@@ -26,3 +26,4 @@
 - E4 eval-invariant：expectConsensus:true 的用例出现任何分歧/报错/失配 = 真失败（exit 1）；informational 用例（expected:null）可声明 expectDiverged 名单，超出预期分歧同样失败。
 - E5 分歧事件订阅链路：分歧/报错事件以 JSON-lines 追加到 data/divergence-events.jsonl（可用 DIVERGENCE_EVENT_FILE 环境变量改路径），每条含 ts/case/consensus/expected/expectDiverged/diverged/errors/components（registry snapshot 健康快照），供 CI/上层订阅与告警。
 | plugin-audit | crawl-gate | B 模式插件 manifest 审计（plugin:true 条目必填字段）+ crawler-kit 导入冒烟（引用不融合） | 0 |
+| photo-smoke | crawl-gate | 真实网络冒烟（在线分层）：CRAWL_SMOKE=1 时用 image-scraper photo 源抓取 python.org 并统计图片 URL（>=1 通过）；未设置时返回 skipped，不纳入离线门禁 | 无（informational） |

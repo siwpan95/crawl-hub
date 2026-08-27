@@ -41,6 +41,20 @@ def cmd_plugin_audit(_payload):
             "error": None if ok else ((r.stderr or r.stdout or "")[-800:])}
 
 
+def cmd_smoke(_payload):
+    # 在线冒烟分层：仅 CRAWL_SMOKE=1 时真实联网；离线黄金值门禁保持绿
+    if not os.environ.get("CRAWL_SMOKE"):
+        return {"ok": True, "value": "skipped"}
+    try:
+        r = _run(["--smoke", "photo", "--json"], timeout=90)
+        report = json.loads(r.stdout or "{}")
+    except Exception as e:
+        return {"ok": False, "value": None, "error": "smoke failed: " + str(e)}
+    ok = r.returncode == 0 and report.get("ok") is True
+    return {"ok": ok, "value": report.get("urls") if ok else None,
+            "error": None if ok else ((r.stderr or r.stdout or "")[-600:])}
+
+
 def cmd_tasks(_payload):
     try:
         r = _run(["--dump-tasks", "--json"], timeout=30)
@@ -53,7 +67,7 @@ def cmd_tasks(_payload):
             "error": None if r.returncode == 0 else ((r.stderr or "")[-400:])}
 
 
-CMDS = {"check": cmd_check, "tasks": cmd_tasks, "plugin-audit": cmd_plugin_audit}
+CMDS = {"check": cmd_check, "tasks": cmd_tasks, "plugin-audit": cmd_plugin_audit, "smoke": cmd_smoke}
 
 
 def main():

@@ -235,6 +235,41 @@ def cmd_plugin_audit(args) -> int:
     return 0 if report["ok"] else 1
 
 
+def cmd_smoke(args) -> int:
+    """真实网络冒烟（在线冒烟分层：不纳入离线黄金值；CRAWL_SMOKE=1 时由 harness 触发）。
+    photo：用 image-scraper 的 photo 源对固定公网站点做一次真实抓取，统计提取到的图片 URL 数。"""
+    plugin = args.smoke
+    if plugin != "photo":
+        if args.json:
+            print(json.dumps({"ok": False, "plugin": plugin, "error": "未知冒烟插件（当前支持：photo）"}, ensure_ascii=False))
+        return 2
+    venv_py = r"G:\repos\image-scraper\.venv\Scripts\python.exe"
+    code = (
+        "import asyncio, json, sys, argparse\n"
+        "sys.path.insert(0, r'G:\\repos\\image-scraper')\n"
+        "from sources.registry import build_source\n"
+        "a = argparse.Namespace(url='https://www.python.org/', max_images=10, concurrency=3, proxy=None, retries=1, rate_limit=0, speed_limit=0)\n"
+        "src = build_source('photo', a)\n"
+        "tasks = asyncio.run(src.fetch_tasks(10))\n"
+        "print(json.dumps({'urls': len(tasks)}))\n"
+    )
+    try:
+        r = subprocess.run([venv_py, "-c", code], capture_output=True, text=True,
+                           encoding="utf-8", timeout=90)
+        n = json.loads((r.stdout or "{}").strip()).get("urls", -1) if r.returncode == 0 else -1
+    except Exception as e:
+        if args.json:
+            print(json.dumps({"ok": False, "plugin": plugin, "error": str(e)}, ensure_ascii=False))
+        return 2
+    report = {"ok": n >= 1, "plugin": plugin, "target": "https://www.python.org/",
+              "urls": n, "stderr": (r.stderr or "")[-300:]}
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        print(f"smoke {plugin}: 提取 {n} 个图片 URL → {'通过 ✅' if n >= 1 else '失败（网络或目标站点不可达）'}")
+    return 0 if report["ok"] else 1
+
+
 def cmd_dump_tasks(args) -> int:
     log = TaskLog()
     entries = log.read(limit=args.limit)
@@ -458,6 +493,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="launcher.py", description="crawl_hub 爬虫工具统一启动器")
     parser.add_argument("--check", action="store_true", help="无 GUI 配置审计")
     parser.add_argument("--plugin-audit", action="store_true", help="B 模式插件 manifest + crawler-kit 冒烟审计")
+    parser.add_argument("--smoke", metavar="PLUGIN", help="真实网络冒烟（当前支持：photo）")
     parser.add_argument("--dump-tasks", action="store_true", help="输出任务事件日志")
     parser.add_argument("--limit", type=int, default=50, help="--dump-tasks 显示条数")
     parser.add_argument("--json", action="store_true", help="JSON 输出")
@@ -466,6 +502,8 @@ def main(argv=None):
         return cmd_check(args)
     if args.plugin_audit:
         return cmd_plugin_audit(args)
+    if args.smoke:
+        return cmd_smoke(args)
     if args.dump_tasks:
         return cmd_dump_tasks(args)
     CrawlHub().run()
