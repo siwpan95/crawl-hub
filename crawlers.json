@@ -65,9 +65,9 @@
     },
     {
       "name": "MJ 视频助手 Midjourney-Video",
-      "category": "图片",
+      "category": "视频",
       "path": "G:/repos/midjourney_video",
-      "entry": "run.py",
+      "entry": "gui.py",
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "Midjourney 视频/图集助手",
