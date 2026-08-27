@@ -1,4 +1,4 @@
-{
+﻿{
   "_comment": "爬虫类工具聚合清单。启动器只负责启动，不 import 任何工具逻辑（零耦合）。新增工具只改本文件。path/entry 用绝对路径，避免相对路径 bug。python='auto' 表示用启动器自身解释器，可改为某工具的 venv python 绝对路径。路径已随顶层目录拆分更新为 G:\\repos / G:\\assets（2026-08-27）。",
   "crawlers": [
     {
@@ -6,6 +6,8 @@
       "category": "网页",
       "path": "G:/repos/webcopier",
       "entry": "WebCopier_GUI.py",
+      "plugin": true,
+      "manifest": "manifest.json",
       "desc": "整站/BFS 网页爬取，含暂停恢复、反爬身份池、图片下载、sitemap 支持",
       "python": "auto"
     },
