@@ -39,6 +39,8 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 - 规范：`PLUGIN_SPEC.md`（每个爬虫 = 一个插件目录 + manifest.json，独立更新）；
 - 扫描/校验：`crawler_registry.py`——必填字段 + **端口登记检查**（port 必须先查端口分配表）；
 - 混用模式：`--check` 同时审计 crawlers.json 工具与 `plugins/` 插件目录（示例：`plugins/example-sfx`，源自 helminth 引擎包装）；
+- **B 模式插件**（`plugin: true` + 工具仓内 `manifest.json`，共 6 个）：webcopier、image-scraper、bilibili-helper-py、midjourney_video、sign-in-simulator、novel-down；
+  `--plugin-audit` 校验这些条目的 manifest 必填字段（name/version/entry/interface）+ `crawler-kit` 导入冒烟。
 - 任务日志（data/tasks.log）与 WorldLog 同构，插件进程启动/退出同样入日志。
 
 ## crawlers.json 字段
@@ -58,7 +60,9 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 - 图片：image-scraper、photo
 - 音效：sfx
 - 字体：font_downloader2（网络）、font_downloader（本地，与网络版互补）
-- 视频：bilibili-helper-py
+- 视频：bilibili-helper-py、midjourney_video
+- 签到：sign-in-simulator
+- 小说：novel-down（读书爬虫，仅免费章节；入口为仓根 `run_gui.py` 薄壳，GUI 本体是包模块 `noveldown.gui`）
 
 > 注：`right/helminth` 是之前失败的融合式整合副本，可移入隔离区；
 > `right/video_generator/sfx` 是 video_generator 的内嵌音效模块（库，非独立工具），不在此收编。
@@ -69,7 +73,9 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 
 `node harness/harness.mjs`——组件清单 harness/manifest.json，契约 harness/spec.md：
 
-- config-audit：launcher.py --check --json（crawlers.json 7 工具 + plugins/ 插件注册表）→ 黄金值 problems 总数 0
+- config-audit：launcher.py --check --json（crawlers.json 10 工具 + plugins/ 插件注册表）→ 黄金值 problems 总数 0
 - task-log：launcher.py --dump-tasks --json 条目数（informational，随运行增长）
+- plugin-audit：launcher.py --plugin-audit --json（6 个 B 模式插件 manifest + crawler-kit 导入）→ 黄金值 problems 总数 0
+- photo-smoke：launcher.py --smoke photo（在线分层，CRAWL_SMOKE=1 才真实联网；未设置 = skipped，informational）
 
 JSON-lines 子进程协议（python 驱动，对应 E:\lab chess-cordis/drivers/py/py_engine_driver.py）+ ready 握手 + 逐请求超时；子进程由 port 层登记 effect，退出即 kill；全绿 exit 0，任何分歧/报错 exit 1。无新增端口。

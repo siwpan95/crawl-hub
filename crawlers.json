@@ -1,5 +1,5 @@
 {
-  "_comment": "爬虫类工具聚合清单。启动器只负责启动，不 import 任何工具逻辑（零耦合）。新增工具只改本文件。path/entry 用绝对路径，避免相对路径 bug。python='auto' 表示用启动器自身解释器，可改为某工具的 venv python 绝对路径。路径已随顶层目录拆分更新为 G:\\repos / G:\\assets（2026-08-27）。",
+  "_comment": "爬虫类工具聚合清单。启动器只负责启动，不 import 任何工具逻辑（零耦合）。新增工具只改本文件。path/entry 用绝对路径，避免相对路径 bug。python='auto' 表示用启动器自身解释器，可改为某工具的 venv python 绝对路径。路径已随顶层目录拆分更新为 G:\\repos / G:\\assets（2026-08-27）。2026-09-22 新增 novel-down（读书爬虫，B 模式插件：仓内 manifest.json + 文件级入口 run_gui.py）。",
   "crawlers": [
     {
       "name": "网页爬虫 WebCopier",
@@ -81,6 +81,16 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "签到工具（站点签到族）",
+      "python": "auto"
+    },
+    {
+      "name": "读书爬虫 Novel-Down",
+      "category": "小说",
+      "path": "G:/repos/novel-down",
+      "entry": "run_gui.py",
+      "plugin": true,
+      "manifest": "manifest.json",
+      "desc": "规则驱动的网络小说爬虫（仅免费章节）：161 条站点规则、目录发现→并发抓取→免费章节六层拦截→断点续爬→TXT/MD/EPUB/HTML 四格式导出",
       "python": "auto"
     }
   ]
