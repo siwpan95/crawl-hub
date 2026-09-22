@@ -360,7 +360,7 @@ class CrawlHub:
 
         ttk.Label(f, text=desc, wraplength=620, font=("Microsoft YaHei", 9)).pack(
             anchor="w", padx=8, pady=(4, 2))
-        ttk.Label(f, text=f"路径：{path}\{entry}", font=("Consolas", 8),
+        ttk.Label(f, text=f"路径：{path}{os.sep}{entry}", font=("Consolas", 8),
                   foreground="#555").pack(anchor="w", padx=8)
 
         row = ttk.Frame(f)
@@ -426,8 +426,8 @@ class CrawlHub:
         if hasattr(btn_start, "_peer"):
             btn_start._peer.configure(state="normal")
         lbl.configure(text=f"● 运行中 PID={proc.pid}", foreground="#1a7a1a")
-        self._log_msg(f"[启动] {name}  PID={proc.pid}  ({path}\{entry})")
-        self.tasklog.append("launch", name, pid=proc.pid, entry=f"{path}\{entry}")
+        self._log_msg(f"[启动] {name}  PID={proc.pid}  ({path}{os.sep}{entry})")
+        self.tasklog.append("launch", name, pid=proc.pid, entry=f"{path}{os.sep}{entry}")
         self._watch(proc, name, btn_start, lbl)
 
     def _watch(self, proc, name, btn_start, lbl):
