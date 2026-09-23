@@ -29,7 +29,8 @@
       "path": "G:/repos/photo",
       "entry": "main.py",
       "desc": "单页图片爬虫，URL + 正则提取 + 下载，轻量 GUI",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["requests", "bs4"]
     },
     {
       "name": "音效爬虫 SFX",
@@ -37,7 +38,8 @@
       "path": "G:/repos/sfx-download",
       "entry": "gui.py",
       "desc": "18+ 公版音效源爬虫（mixkit/pixabay/zapsplat 等），含播放器",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["playsound3", "pydub", "mutagen", "pygame"]
     },
     {
       "name": "字体爬虫 Font-DL (网络)",
@@ -45,7 +47,8 @@
       "path": "G:/assets/fonts",
       "entry": "font_downloader2.py",
       "desc": "网络字体爬虫（猫啃网/字体天下/100font/Google Fonts 等公版站）",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["requests", "bs4", "curl_cffi"]
     },
     {
       "name": "字体复制 Font-DL (本地)",
@@ -53,7 +56,8 @@
       "path": "G:/assets/fonts",
       "entry": "font_downloader.py",
       "desc": "本地字体复制工具，读本地 fonts_data.json 从源目录复制（与网络版互补）",
-      "python": "auto"
+      "python": "auto",
+      "requires": []
     },
     {
       "name": "B站助手 Bilibili-Helper",

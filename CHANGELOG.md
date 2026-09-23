@@ -18,6 +18,13 @@
   动机：`python: auto` 跟随启动器解释器，换解释器时会出现「卡片能起、抓取缺依赖」的静默降级——现在在审计阶段就暴露。
   已为 6 个 B 模式插件声明核心依赖：webcopier/novel-down `["requests","bs4"]`、image-scraper/midjourney_video `["httpx"]`、
   bilibili-helper-py `["requests","yt_dlp"]`、sign-in-simulator `["pandas"]`（依据各仓 requirements.txt 实测）。
+- **4 条本地工具补 `requires`**（口径同上：只列主功能必需模块，import 名）：
+  Photo `["requests","bs4"]`（crawler_core/crawler_engine 模块级；PIL 仅缩略图不列）、
+  SFX `["playsound3","pydub","mutagen","pygame"]`（试听/转换/元数据；pystray 托盘与 PIL 缩略图不列）、
+  Font-DL 网络 `["requests","bs4","curl_cffi"]`（三者均模块级）、
+  Font-DL 本地 `[]`（已核实纯标准库，显式空数组）。至此 10/10 条目都有依赖声明。
+  注：bilibili-helper 的 `socks`（requirements.txt 有）**不计入**——它在 `engine/bilibili_engine.py:611` 的
+  `socks5://` 代理分支里惰性 import，且已自带 `pip install requests[socks]` 提示，属代理可选依赖。
 - **「插件数」两处口径写进文档**：`plugins/` 目录型注册表当前 1 个（example-sfx）；B 模式真实接入 6 个；crawlers.json 工具 10 条。
 
 ### Changed

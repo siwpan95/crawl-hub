@@ -57,7 +57,7 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 | `entry` | 入口脚本（相对于 path） |
 | `desc` | 描述 |
 | `python` | `auto` = 启动器解释器；或填某工具 venv 的 python 绝对路径。**用 `auto` 时该解释器必须装有该工具的依赖**（见下一条）——换解释器会出现「卡片能起、抓取缺依赖」的静默降级 |
-| `requires` | 该工具的**核心第三方依赖清单（写 import 名，不是 pip 名）**，如 `["requests", "bs4"]`、`["yt_dlp"]`。`--check` 会按该条目解析出的解释器逐一 `importlib.util.find_spec` 探测，缺失即报问题；留空/缺省则不探测（向后兼容） |
+| `requires` | 该工具**主功能必须能 import** 的第三方模块（写 **import 名**，不是 pip 名），如 `["requests", "bs4"]`、`["yt_dlp"]`。`--check` 会按该条目解析出的解释器逐一 `importlib.util.find_spec` 探测，缺失即报问题。缺省/留空＝不探测（向后兼容）；**显式 `[]` ＝ 已核实该工具纯标准库**。判定口径：只列主功能必需的模块——仅测试期依赖（如 pytest）、代理可选依赖（如 bilibili-helper 的 `socks`：仅在 `socks5://` 代理分支里惰性 import 且自带安装提示）、纯增强/降级用途（缩略图、托盘图标）一律不列 |
 
 ## 已聚合工具
 
