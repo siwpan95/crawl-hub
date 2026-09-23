@@ -1,5 +1,8 @@
 # crawl_hub - 爬虫类工具统一启动器
 
+> 仓库：<https://gitee.com/siwpan/crawl-hub> ｜ 许可：MIT（见 [LICENSE](LICENSE)）
+> 注：文中 <PATH> 为路径占位符，请替换为你本机实际的目录 / 可执行文件路径。
+
 聚合式整合（aggregation，非融合 fusion）。吸取 `helminth` 融合式整合失败的教训：
 把 webcopier / sfx / font / bilibili / image-scraper 等爬虫**重写融合**成一个框架，
 结果三原工具一个没退役、反而更活跃，等于 4 份副本、整合框架被冷落。
@@ -78,4 +81,4 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 - plugin-audit：launcher.py --plugin-audit --json（6 个 B 模式插件 manifest + crawler-kit 导入）→ 黄金值 problems 总数 0
 - photo-smoke：launcher.py --smoke photo（在线分层，CRAWL_SMOKE=1 才真实联网；未设置 = skipped，informational）
 
-JSON-lines 子进程协议（python 驱动，对应 E:\lab chess-cordis/drivers/py/py_engine_driver.py）+ ready 握手 + 逐请求超时；子进程由 port 层登记 effect，退出即 kill；全绿 exit 0，任何分歧/报错 exit 1。无新增端口。
+JSON-lines 子进程协议（python 驱动，对应 <PATH> chess-cordis/drivers/py/py_engine_driver.py）+ ready 握手 + 逐请求超时；子进程由 port 层登记 effect，退出即 kill；全绿 exit 0，任何分歧/报错 exit 1。无新增端口。
