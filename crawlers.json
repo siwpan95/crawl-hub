@@ -9,7 +9,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "整站/BFS 网页爬取，含暂停恢复、反爬身份池、图片下载、sitemap 支持",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["requests", "bs4"]
     },
     {
       "name": "图片爬虫 Image-Scraper",
@@ -19,7 +20,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "多数据源图片爬虫，JSON 配置驱动，含代理获取/校验",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["httpx"]
     },
     {
       "name": "简易图片爬虫 Photo",
@@ -61,7 +63,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "B站视频/弹幕下载与处理，多引擎架构，支持 SOCKS5 代理",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["requests", "yt_dlp"]
     },
     {
       "name": "MJ 视频助手 Midjourney-Video",
@@ -71,7 +74,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "Midjourney 视频/图集助手",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["httpx"]
     },
     {
       "name": "签到工具 Sign-in",
@@ -81,7 +85,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "签到工具（站点签到族）",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["pandas"]
     },
     {
       "name": "读书爬虫 Novel-Down",
@@ -91,7 +96,8 @@
       "plugin": true,
       "manifest": "manifest.json",
       "desc": "规则驱动的网络小说爬虫（仅免费章节）：161 条站点规则、目录发现→并发抓取→免费章节六层拦截→断点续爬→TXT/MD/EPUB/HTML 四格式导出",
-      "python": "auto"
+      "python": "auto",
+      "requires": ["requests", "bs4"]
     }
   ]
 }

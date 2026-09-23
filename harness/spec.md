@@ -12,7 +12,7 @@
 
 | cmd | 语义 | 黄金值 |
 |---|---|---|
-| check | launcher.py --check --json：crawlers.json 10 工具 + plugins/ 插件注册表审计，value = problems 总数 | 0 |
+| check | launcher.py --check --json：crawlers.json 10 工具 + plugins/ 插件注册表审计 + **已声明 `requires` 的依赖探测**（按条目解析出的解释器），value = problems 总数 | 0 |
 | tasks | launcher.py --dump-tasks --json：任务事件日志条目数（JSONL 同构 WorldLog） | 无（informational，随运行增长） |
 | plugin-audit | launcher.py --plugin-audit --json：B 模式插件 manifest 审计（plugin:true 条目必填字段）+ crawler-kit 导入冒烟（引用不融合），value = problems 总数 | 0 |
 | photo-smoke | launcher.py --smoke photo --json：真实网络冒烟（在线分层），CRAWL_SMOKE=1 时用 image-scraper photo 源抓取 python.org 并统计图片 URL（>=1 通过）；未设置时返回 skipped，不纳入离线门禁 | 无（informational） |

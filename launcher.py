@@ -36,6 +36,55 @@ _TASKS_LOG = os.path.join(_ROOT, "data", "tasks.log")
 
 REQUIRED_FIELDS = ("name", "category", "path", "entry")
 
+#: 依赖探测超时（秒）——单条目的解释器探测不应拖慢 --check
+REQUIRES_PROBE_TIMEOUT = 20
+
+
+def resolve_python(item: dict) -> str:
+    """解析条目实际使用的解释器：``python`` 字段为 ``auto``（或缺省）时＝启动器解释器。
+
+    对应 README「crawlers.json 字段」表：`auto` = 启动器解释器；或填某工具 venv 的 python 绝对路径。
+    """
+    py = str(item.get("python", "auto")).strip()
+    if py and py != "auto":
+        return py
+    return sys.executable
+
+
+def probe_requires(item: dict) -> list:
+    """按解析出的解释器探测该条目声明的第三方依赖（可选字段 ``requires``，**import 名**）。
+
+    动机（2026-09-23）：``python: auto`` 跟随启动器解释器，因此**该解释器必须装有对应工具的依赖**——
+    用别的解释器起 launcher 时，卡片能开但抓取会因为缺 requests/bs4 之类的包而失败（静默降级）。
+    本函数把这种「换解释器即坏」在 `--check` 阶段暴露出来。
+
+    返回问题字符串列表（空列表＝通过或未声明 requires）。
+    """
+    reqs = item.get("requires") or []
+    if isinstance(reqs, str):
+        reqs = [r.strip() for r in reqs.split(",") if r.strip()]
+    if not reqs:
+        return []
+    py = resolve_python(item)
+    code = (
+        "import importlib.util, sys\n"
+        "missing = [m for m in sys.argv[1:] if importlib.util.find_spec(m) is None]\n"
+        "print(';'.join(missing))\n"
+    )
+    try:
+        r = subprocess.run([py, "-c", code, *reqs],
+                           capture_output=True, text=True, timeout=REQUIRES_PROBE_TIMEOUT)
+    except (OSError, subprocess.SubprocessError) as e:
+        return [f"依赖探测失败（解释器 {py}）: {type(e).__name__}: {e}"]
+    if r.returncode != 0:
+        tail = ((r.stderr or r.stdout or "").strip().splitlines() or [""])[-1][:200]
+        return [f"依赖探测执行失败（解释器 {py}）: {tail}"]
+    missing = [m for m in (r.stdout or "").strip().split(";") if m]
+    if missing:
+        src = "启动器解释器" if str(item.get("python", "auto")).strip() in ("", "auto") else f"python={py}"
+        return [f"解释器缺少依赖: {', '.join(missing)}（{src}；该条目 requires={reqs}）"]
+    return []
+
 
 # ─────────────────────────────────────────────────────────────
 #  配置校验（启动审计）
@@ -67,6 +116,9 @@ def validate_config(cfg: dict) -> list:
         py = str(item.get("python", "auto")).strip()
         if py and py != "auto" and not os.path.isfile(py):
             problems.append({"tool": name, "problem": f"python 解释器不存在: {py}"})
+            continue  # 解释器都不存在，再探测依赖没有意义
+        for prob in probe_requires(item):
+            problems.append({"tool": name, "problem": prob})
     return problems
 
 

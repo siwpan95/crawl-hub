@@ -42,6 +42,7 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 - 规范：`PLUGIN_SPEC.md`（每个爬虫 = 一个插件目录 + manifest.json，独立更新）；
 - 扫描/校验：`crawler_registry.py`——必填字段 + **端口登记检查**（port 必须先查端口分配表）；
 - 混用模式：`--check` 同时审计 crawlers.json 工具与 `plugins/` 插件目录（示例：`plugins/example-sfx`，源自 helminth 引擎包装）；
+- **「插件数」有两处口径，勿混**（2026-09-23 实测）：`plugins/` **目录型注册表当前只有 1 个**（`example-sfx`）；**B 模式真实接入 6 个**（下方列表）；`crawlers.json` 工具条目**共 10 条**；
 - **B 模式插件**（`plugin: true` + 工具仓内 `manifest.json`，共 6 个）：webcopier、image-scraper、bilibili-helper-py、midjourney_video、sign-in-simulator、novel-down；
   `--plugin-audit` 校验这些条目的 manifest 必填字段（name/version/entry/interface）+ `crawler-kit` 导入冒烟。
 - 任务日志（data/tasks.log）与 WorldLog 同构，插件进程启动/退出同样入日志。
@@ -55,7 +56,8 @@ python launcher.py --dump-tasks [--limit N] [--json]   # 任务事件日志审�
 | `path` | 工具目录（绝对路径） |
 | `entry` | 入口脚本（相对于 path） |
 | `desc` | 描述 |
-| `python` | `auto` = 启动器解释器；或填某工具 venv 的 python 绝对路径 |
+| `python` | `auto` = 启动器解释器；或填某工具 venv 的 python 绝对路径。**用 `auto` 时该解释器必须装有该工具的依赖**（见下一条）——换解释器会出现「卡片能起、抓取缺依赖」的静默降级 |
+| `requires` | 该工具的**核心第三方依赖清单（写 import 名，不是 pip 名）**，如 `["requests", "bs4"]`、`["yt_dlp"]`。`--check` 会按该条目解析出的解释器逐一 `importlib.util.find_spec` 探测，缺失即报问题；留空/缺省则不探测（向后兼容） |
 
 ## 已聚合工具
 

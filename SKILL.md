@@ -15,6 +15,8 @@ agent_created: true
 - launcher.py：GUI + validate_config 启动审计 + TaskLog + --check/--plugin-audit/--smoke/--dump-tasks CLI
 - crawlers.json：10 个工具清单（webcopier/image-scraper/photo/sfx/fonts×2/bilibili/midjourney-video/sign-in/novel-down）
 - B 模式插件（plugin:true + 工具仓 manifest.json，6 个）：webcopier、image-scraper、bilibili-helper-py、midjourney_video、sign-in-simulator、novel-down
+- **口径勿混**：`plugins/` 目录型注册表当前只有 **1 个**（example-sfx）；B 模式真实接入 **6 个**；`crawlers.json` 工具 **10 条**
+- `python: auto` = 跟随启动器解释器 ⇒ **该解释器必须装有对应工具依赖**（`requires` 字段，import 名）；`--check` 会按解析出的解释器探测并在缺失时报问题（换解释器不再静默降级）
 - data/tasks.log：JSONL 任务事件（launch/exit/stop/error/config_error）
 - tests/test_hub.py：pytest 9/9
 - harness/：manifest.json（组件清单）+ port.mjs（JSON-lines 子进程端口）+ driver.py + harness.mjs（黄金值跑批）
