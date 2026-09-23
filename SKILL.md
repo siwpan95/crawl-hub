@@ -1,6 +1,6 @@
 ---
 name: crawl-hub
-description: Maintain the crawl_hub crawler launcher (G:/crawlers/crawl_hub). Aggregation-not-fusion launcher with config audit and JSONL task log.
+description: Maintain the crawl_hub crawler launcher (本 SKILL.md 所在仓库根). Aggregation-not-fusion launcher with config audit and JSONL task log.
 agent_created: true
 ---
 
