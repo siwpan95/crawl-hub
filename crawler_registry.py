@@ -60,7 +60,8 @@ def validate_plugins(root: str) -> dict:
                     problems.append(f"缺少字段 '{field}'")
             port = str(mf.get("port", "")).strip()
             if port and port not in REGISTERED_PORTS:
-                problems.append(f"端口 {port} 未登记（先查 G:\allin\docs\md\allin主工作区\端口分配表.md）")
+                # 用 raw f-string：Windows 路径里的 \a 会被当成 BEL、\d 等非法转义会发 SyntaxWarning
+                problems.append(rf"端口 {port} 未登记（先查 G:\allin\docs\md\allin主工作区\端口分配表.md）")
         if problems:
             ok = False
         plugins.append({"dir": d, "name": (mf or {}).get("name", os.path.basename(d)), "problems": problems})
