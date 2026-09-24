@@ -29,7 +29,7 @@ crawler-plugin/
 
 1. **独立更新**：插件目录自包含；升级 = 替换目录或改 version，不动 hub 与其他插件；
 2. **子进程隔离**：hub 以 `subprocess` 启动 entry，崩一个不影响其他（helminth 教训）；
-3. **统一端口**：port 字段必须登记于 G:\docs\md\allin主工作区\端口分配表.md；
+3. **统一端口**：port 字段必须登记于 G:\allin\docs\md\allin主工作区\端口分配表.md；
 4. **任务日志**：hub 记录 JSONL（launch/exit/exit_code/duration），与 WorldLog 同构；
 5. **共享运行时库**（可选）：反爬核心（身份轮换/限速/下载器）由 helminth core/ 提炼为独立库供插件引用，但**引用不融合**——库有版本，插件声明依赖版本。
 

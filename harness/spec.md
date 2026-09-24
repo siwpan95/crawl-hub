@@ -19,7 +19,7 @@
 
 ## 纪律
 
-- 无新增端口；爬虫工具自身端口若存在，登记见 G:\docs\md\allin主工作区\ports.yaml / 端口分配表.md。
+- 无新增端口；爬虫工具自身端口若存在，登记见 G:\allin\docs\md\allin主工作区\ports.yaml / 端口分配表.md。
 - crawlers.json 内 path/entry 一律绝对路径（2026-08-27 已随顶层目录拆分更新为 G:\\repos / G:\\assets）。
 - 运行：node harness/harness.mjs；全绿 exit 0，任何分歧/报错 exit 1。
 
