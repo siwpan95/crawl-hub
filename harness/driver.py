@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PYTHON = os.environ.get("CRAWL_PYTHON") or r"F:\Python314\python.exe"
+PYTHON = os.environ.get("CRAWL_PYTHON") or r"python"
 
 
 def _run(args, timeout):
