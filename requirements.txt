@@ -1,2 +1,5 @@
 # crawl_hub dependencies (auto-generated 2026-08-20)
 # no third-party deps (stdlib only)
+
+# allin-r6-local (2026-11-15) 运行时注入的内部模块声明
+# r6-local: engines
